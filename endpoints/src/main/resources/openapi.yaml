@@ -1,0 +1,80 @@
+---
+openapi: 3.1.0
+tags:
+- name: Greeting
+- name: String Operations
+servers:
+  - url: http://localhost:8082/
+components:
+  schemas:
+    HelloResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "hello test"
+    ReverseRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "hello\ntest"
+    ReverseResponse:
+      type: object
+      properties:
+        original:
+          type: string
+          example: "hello\ntest"
+        reversed:
+          type: string
+          example: "tset\nolleh"
+paths:
+  /hello/{name}:
+    get:
+      summary: Greet by name
+      description: "Returns a greeting message in the format `hello {name}` using\
+        \ the provided name."
+      tags:
+      - Greeting
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Greeting message returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HelloResponse"
+        "400":
+          description: "Bad request: The name parameter is null or empty."
+  /reverse:
+    post:
+      summary: Reverse a string
+      description: "Accepts a JSON request containing a string, reverses the string,\
+        \ and returns both the original and reversed versions."
+      tags:
+      - String Operations
+      requestBody:
+        description: JSON object containing the string to be reversed.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReverseRequest"
+        required: true
+      responses:
+        "200":
+          description: Reversed string returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReverseResponse"
+        "400":
+          description: "Bad request: Request body is null or the string content is\
+            \ null or empty."
+info:
+  title: endpoints API
+  version: "1.0"
